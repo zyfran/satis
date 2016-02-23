@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of composer/statis.
+ * This file is part of composer/satis.
  *
  * (c) Composer <https://github.com/composer>
  *
@@ -88,12 +88,14 @@ The json config file accepts the following keys:
 - <info>"notify-batch"</info>: Allows you to specify a URL that will
   be called every time a user installs a package, see
   https://getcomposer.org/doc/05-repositories.md#notify-batch
+- <info>"include-filename"</info> Specify filename instead of default include/all\${SHA1_HASH}.json
+
 EOT
             );
     }
 
     /**
-     * @param InputInterface $input The input instance
+     * @param InputInterface  $input  The input instance
      * @param OutputInterface $output The output instance
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -124,7 +126,20 @@ EOT
 
         try {
             $this->check($configFile);
-        } catch (\Exception $e) {
+        } catch (JsonValidationException $e) {
+            foreach ($e->getErrors() as $error) {
+                $output->writeln(sprintf('<error>%s</error>', $error));
+            }
+            if (!$skipErrors) {
+                throw $e;
+            }
+            $output->writeln(sprintf('<warning>%s: %s</warning>', get_class($e), $e->getMessage()));
+        } catch (ParsingException $e) {
+            if (!$skipErrors) {
+                throw $e;
+            }
+            $output->writeln(sprintf('<warning>%s: %s</warning>', get_class($e), $e->getMessage()));
+        } catch (\UnexpectedValueException $e) {
             if (!$skipErrors) {
                 throw $e;
             }
@@ -234,12 +249,12 @@ EOT
      * Validates the syntax and the schema of the current config json file
      * according to satis-schema.json rules.
      *
-     * @param  string $configFile      The json file to use
+     * @param string $configFile The json file to use
      *
      * @throws ParsingException        if the json file has an invalid syntax
      * @throws JsonValidationException if the json file doesn't match the schema
      *
-     * @return bool                    true on success
+     * @return bool true on success
      */
     private function check($configFile)
     {

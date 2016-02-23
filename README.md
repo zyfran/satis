@@ -15,8 +15,18 @@ Usage
 - Install satis: `php composer.phar create-project composer/satis --stability=dev --keep-vcs`
 - Build a repository: `php bin/satis build <configuration file> <build-dir>`
 
-Read the more detailed instructions in the 
+Read the more detailed instructions in the
 [documentation](http://getcomposer.org/doc/articles/handling-private-packages-with-satis.md).
+
+Purge
+-----
+
+If you choose to archive packages in your server, you can have useless files.  
+With the `purge` command, you delete these files.
+
+    php bin/satis purge <composer.json> <build-dir>
+
+ > Note: be careful if you reference your archives in your lock file.
 
 Updating
 --------
@@ -43,6 +53,13 @@ Jordi Boggiano - <j.boggiano@seld.be> - <http://twitter.com/seldaek> - <http://s
 Nils Adermann - <naderman@naderman.de> - <http://twitter.com/naderman> - <http://www.naderman.de><br />
 
 See also the list of [contributors](https://github.com/composer/satis/contributors) who participated in this project.
+
+Community Tools
+---------------
+- [satis-go](https://github.com/benschw/satis-go) - A simple web server for managing Satis configuration and hosting the generated Composer repository.
+- [satisfy](https://github.com/ludofleury/satisfy) - Symfony based composer repository manager with a simple web UI.
+- [satis-control-panel](https://github.com/realshadow/satis-control-panel) - Simple web UI for managing your Satis Repository with optional CI integration.
+
 
 License
 -------
